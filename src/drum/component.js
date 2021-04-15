@@ -1,11 +1,20 @@
 import React from 'react';
 import styled from 'styled-components';
 import GlobalStyle from "./styles"
+import Slider from '@material-ui/core/Slider';
+import Switch from '@material-ui/core/Switch';
+import FormGroup from '@material-ui/core/FormGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormControl from '@material-ui/core/FormControl';
+
 class Drum extends React.Component {
     constructor(props) {
       super(props)
       this.handleClick = this.handleClick.bind(this);
       this.handleKeyPressed = this.handleKeyPressed.bind(this);
+      this.volumeChanged = this.volumeChanged.bind(this);
+      this.bankSwitch = this.bankSwitch.bind(this);
+      this.onOffSwitch = this.onOffSwitch.bind(this);
       this.state = {
             displayMessage: 'POWER ON',
             power: false,
@@ -38,8 +47,11 @@ class Drum extends React.Component {
        console.log("OnOff Switch used")
      }
 
-     volumeChanged(e) {
-       console.log("VolumeChanged")
+     volumeChanged(event, newValue) {
+       this.setState({
+         volume: newValue
+       })
+       console.log(newValue)
      }
   
      render() {
@@ -60,34 +72,18 @@ class Drum extends React.Component {
                 <Display text={this.state.displayMessage} />
                 <PadsContainer>{renderHtml}</PadsContainer> 
                 <ControlsContainer id="controls">
-                  <Switch function="On/Off" label="On/Off" onClick={this.bankSwitch}/>
-                  <Switch function="Bank Switch" label="Bank 1/2" onClick={this.onOffSwitch}/> 
-                  <Slider onChange={this.volumeChanged}/>
+                <FormControl component="fieldset">
+                <FormGroup aria-label="position" column>
+                <FormControlLabel value="top" control={<Switch color="primary" />} label="Top" labelPlacement="top" />      
+                <FormControlLabel value="top" control={<Switch color="primary" />} label="Top" labelPlacement="top" />        
+                <Slider value={this.state.volume} onChange={this.volumeChanged} aria-labelledby="continuous-slider" />
+                </FormGroup>
+                </FormControl>
                 </ControlsContainer>
             </DrumMachine>
       </React.Fragment>
         )
        }
-     }
-
-     const Switch = (props) => {
-         return(
-           <div style={OnOffSwitchStyle} >
-           <p>{props.function}</p>
-                <label className="switch" htmlFor={props.function}>{props.label}
-                    <input id={props.function} type="checkbox" onClick={props.onClick} />
-                    <span className="slider"></span>
-                </label>
-            </div>
-         )
-     }
-
-     const Slider = (props) => {
-         return(
-            <div style={VolumeSliderStyle} className="slidebarcontainer">
-                <input type="range" min="1" max="100" value={props.value} className="slidebar" id="myRange" onChange={props.onChange} />
-            </div>
-         )
      }
 
      const Display = ({text}) => {
@@ -97,7 +93,6 @@ class Drum extends React.Component {
         </div>
       )
   }
-
 
 const PadsContainer = styled.div`
   display: grid;
@@ -109,6 +104,7 @@ const PadsContainer = styled.div`
 `
 
 const DrumMachine = styled.div`
+  position:relative;
   padding: 25px;
   width: 50rem;
   height: 22rem;
@@ -123,15 +119,16 @@ const Pad = styled.div`
   border: 1px solid rgba(0, 0, 0, 0.8);
   padding: 20px;
   font-size: 30px;
-  text-align: center;
   cursor: pointer;
   border-radius: 20px;
 `
 
 const ControlsContainer = styled.div`
-position: relative;
-bottom: 100px;
-  background-color: rgba(255, 255, 255, 0.8);
+  position: absolute;
+  width: 170px;
+  bottom: 20px;
+  right: 16px;
+  height: 230px;
   border: 1px solid rgba(0, 0, 0, 0.8);
   padding: 20px;
   border-radius: 20px;
@@ -145,16 +142,6 @@ bottom: 100px;
   }
 
   const OnOffSwitchStyle = {
-    // position: "relative",
-    // left: "600px"
-  }
-
-  const bankSwitchStyle = {
-    // position: "relative",
-    // left: "600px"
-  }
-
-  const VolumeSliderStyle = {
     // position: "relative",
     // left: "600px"
   }
