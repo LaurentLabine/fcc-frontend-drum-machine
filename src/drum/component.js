@@ -6,17 +6,21 @@ import Switch from '@material-ui/core/Switch';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
+import { withStyles } from '@material-ui/core/styles';
+import { purple } from '@material-ui/core/colors';
 
 class Drum extends React.Component {
     constructor(props) {
       super(props)
+
       this.handleClick = this.handleClick.bind(this);
       this.handleKeyPressed = this.handleKeyPressed.bind(this);
       this.volumeChanged = this.volumeChanged.bind(this);
       this.bankSwitch = this.bankSwitch.bind(this);
       this.onOffSwitch = this.onOffSwitch.bind(this);
+
       this.state = {
-            displayMessage: 'POWER ON',
+            displayMessage: '',
             power: false,
             bank2: false,
             volume: 100
@@ -24,27 +28,51 @@ class Drum extends React.Component {
      }
   
      handleClick(e) {
-        var element = document.getElementById(e.target.id.slice(3));
-        this.setState({
-                  displayMessage: bankOne.find(obj => obj.keyTrigger === e.target.id.slice(3)).id
-                })      
-        element.play();
+
+      var targedId = e.target.id.slice(3)
+      var element = document.getElementById(targedId);
+      var bank = bankOne
+
+      if(this.state.bank2)
+        bank = bankTwo
+
+      this.setState({
+                displayMessage:bank.find(obj => obj.keyTrigger === targedId).id
+              })
+
+      element.play();
     }
 
      handleKeyPressed(e) {
-         var element = document.getElementById(e.key.toUpperCase());
-         this.setState({
-                  displayMessage: bankOne.find(obj => obj.keyTrigger === e.key.toUpperCase()).id
-                })
-         element.play();
+
+      var selection = e.key.toUpperCase()
+     
+      if(!possibleKeys.includes(selection))
+      return
+
+      var element = document.getElementById(selection);
+      
+      var bank = bankOne
+
+      if(this.state.bank2)
+        bank = bankTwo
+        
+      this.setState({
+              displayMessage:bank.find(obj => obj.keyTrigger === selection).id
+            })
+      element.play();
      }
 
-     bankSwitch(e) {
-       console.log("bankswitch used")
+     bankSwitch() {
+       this.setState({
+         bank2: !this.state.bank2
+       })
      }
 
-     onOffSwitch(e) {
-       console.log("OnOff Switch used")
+     onOffSwitch() {
+       this.setState({
+         power: !this.state.power
+       })
      }
 
      volumeChanged(event, newValue) {
@@ -56,7 +84,19 @@ class Drum extends React.Component {
   
      render() {
         var renderHtml = [];
-          for(var i = 0; i< bankOne.length; i++)
+        if(this.state.bank2)
+        {
+          for(var i = 0; i< bankTwo.length; i++)
+          {
+            renderHtml.push(
+            <Pad key={bankTwo[i].keyCode} onClick={this.handleClick} id={"div" + bankTwo[i].keyTrigger} className="grid-item drum-pad" >
+            {bankTwo[i].keyTrigger}
+                <audio id={bankTwo[i].keyTrigger} className="clip" src={bankTwo[i].url} />
+            </Pad>);
+         }
+        }
+        else{
+          for(i = 0; i< bankTwo.length; i++)
           {
             renderHtml.push(
             <Pad key={bankOne[i].keyCode} onClick={this.handleClick} id={"div" + bankOne[i].keyTrigger} className="grid-item drum-pad" >
@@ -64,6 +104,7 @@ class Drum extends React.Component {
                 <audio id={bankOne[i].keyTrigger} className="clip" src={bankOne[i].url} />
             </Pad>);
          }
+        }
 
        return (
         <React.Fragment>
@@ -71,15 +112,13 @@ class Drum extends React.Component {
             <DrumMachine id="drum-machine" tabIndex="0" onKeyDown={this.handleKeyPressed}>
                 <Display text={this.state.displayMessage} />
                 <PadsContainer>{renderHtml}</PadsContainer> 
-                <ControlsContainer id="controls">
-                <FormControl component="fieldset">
-                <FormGroup aria-label="position" column>
-                <FormControlLabel value="top" control={<Switch color="primary" />} label="Top" labelPlacement="top" />      
-                <FormControlLabel value="top" control={<Switch color="primary" />} label="Top" labelPlacement="top" />        
-                <Slider value={this.state.volume} onChange={this.volumeChanged} aria-labelledby="continuous-slider" />
+                <FormControl id="controls" component="fieldset">
+                <FormGroup aria-label="position">
+                <FormControlLabel value="top"  control={<PurpleSwitch color="secondary" onChange={this.onOffSwitch} />} label="Off/On" labelPlacement="top" />      
+                <FormControlLabel value="top" control={<Switch color="secondary" onChange={this.bankSwitch}/>} label="Bank 1/2" labelPlacement="top" />        
+                <FormControlLabel value="top" control={<Slider value={this.state.volume} color="secondary" onChange={this.volumeChanged} aria-labelledby="continuous-slider" />} label="Volume" labelPlacement="top" /> 
                 </FormGroup>
                 </FormControl>
-                </ControlsContainer>
             </DrumMachine>
       </React.Fragment>
         )
@@ -89,7 +128,7 @@ class Drum extends React.Component {
      const Display = ({text}) => {
       return(
         <div style={DisplayStyle} id="display">
-            <h1>{text}</h1>
+            {text}
         </div>
       )
   }
@@ -102,6 +141,20 @@ const PadsContainer = styled.div`
   padding: 10px;
   gap: 10px;
 `
+
+const PurpleSwitch = withStyles({
+  switchBase: {
+    color: purple[300],
+    '&$checked': {
+      color: purple[500],
+    },
+    '&$checked + $track': {
+      backgroundColor: purple[500],
+    },
+  },
+  checked: {},
+  track: {},
+})(Switch);
 
 const DrumMachine = styled.div`
   position:relative;
@@ -123,28 +176,19 @@ const Pad = styled.div`
   border-radius: 20px;
 `
 
-const ControlsContainer = styled.div`
-  position: absolute;
-  width: 170px;
-  bottom: 20px;
-  right: 16px;
-  height: 230px;
-  border: 1px solid rgba(0, 0, 0, 0.8);
-  padding: 20px;
-  border-radius: 20px;
-`
-
   const DisplayStyle = {
-      display: "block",
-      width: "100%",
+      display: "flex",
       color: "white",
-      border: "2px solid #73AD21"
+      width: "200px",
+      height: "4rem",
+      margin: "auto auto 20px auto",
+      backgroundColor: "black",
+      fontFamily: 'Electrolize',
+      justifyContent: "center",
+      verticalAlign: "middle"
   }
 
-  const OnOffSwitchStyle = {
-    // position: "relative",
-    // left: "600px"
-  }
+  const possibleKeys = ["Q", "W", "E", "A", "S", "D", "Z", "X", "C"]
 
      const bankOne = [
     {
