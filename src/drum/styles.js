@@ -71,16 +71,6 @@ export default createGlobalStyle `
         transform: translateX(26px);
     }
 
-    #controls {
-        display: flex;
-        background-color: red;
-        position:relative;
-        left: 600px;
-        width: 400px;
-        bottom: 200px;
-        height: 200px;
-    }
-
 .slidebarcontainer {
   width: 100%; /* Width of the outside container */
 }
