@@ -38,21 +38,16 @@ class Drum extends React.Component {
 
   handleKeyPressed(event) {
     const selection = event.key.toUpperCase();
-
     if (!possibleKeys.includes(selection) || !this.state.isPowered) return;
-
     this.fetchAndPlay(selection);
   }
 
   // Function that finds an element from a string identifier and plays it.
   fetchAndPlay(selection) {
     const element = document.getElementById(selection);
-
     if (!element || !this.state.isPowered) return;
-
     element.volume = this.state.volume / 100;
     let bank = bankOne;
-
     if (this.state.bank2) bank = bankTwo;
 
     this.setState({
@@ -74,9 +69,12 @@ class Drum extends React.Component {
   }
 
   bankSwitch() {
+    let dsplmsg = "";
+    if (this.state.isPowered) dsplmsg = this.state.bank2 ? "Bank 1" : "Bank 2";
+
     this.setState({
       bank2: !this.state.bank2,
-      displayMessage: this.state.bank2 ? "Bank 1" : "Bank 2",
+      displayMessage: dsplmsg,
     });
   }
 
@@ -106,6 +104,11 @@ class Drum extends React.Component {
       volume: newValue,
       displayMessage: dsplmsg,
     });
+  }
+
+  updateDisplay(text) {
+    if (this.state.isPowered) return text;
+    else return "";
   }
 
   render() {
