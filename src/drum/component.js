@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import styled from 'styled-components';
 import GlobalStyle from "./styles"
 import Slider from '@material-ui/core/Slider';
@@ -74,8 +74,15 @@ class Drum extends React.Component {
 
      onOffSwitch() {
 
+      if(!this.state.power){
+        setTimeout(function() { //Start the timer
+          this.setState({displayMessage: ""}) //After 1 second, set render to true
+      }.bind(this), 2000)
+      }
+
         this.setState({
           power: !this.state.power,
+          displayMessage: "Power On"
         })
      }
 
