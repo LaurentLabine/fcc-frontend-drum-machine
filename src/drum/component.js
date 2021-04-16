@@ -29,6 +29,9 @@ class Drum extends React.Component {
   
      handleClick(e) {
 
+      if(!this.state.power)
+      return
+
       var targedId = e.target.id.slice(3)
       var element = document.getElementById(targedId);
       var bank = bankOne
@@ -47,7 +50,7 @@ class Drum extends React.Component {
 
       var selection = e.key.toUpperCase()
      
-      if(!possibleKeys.includes(selection))
+      if(!possibleKeys.includes(selection) || !this.state.power)
       return
 
       var element = document.getElementById(selection);
@@ -70,9 +73,10 @@ class Drum extends React.Component {
      }
 
      onOffSwitch() {
-       this.setState({
-         power: !this.state.power
-       })
+
+        this.setState({
+          power: !this.state.power,
+        })
      }
 
      volumeChanged(event, newValue) {
@@ -83,6 +87,7 @@ class Drum extends React.Component {
      }
   
      render() {
+      
         var renderHtml = [];
         if(this.state.bank2)
         {
@@ -106,11 +111,16 @@ class Drum extends React.Component {
          }
         }
 
+        var displayMsg = this.state.displayMessage
+
+        if(!this.state.power)
+          displayMsg = ""
+
        return (
         <React.Fragment>
         <GlobalStyle />
             <DrumMachine id="drum-machine" tabIndex="0" onKeyDown={this.handleKeyPressed}>
-                <Display text={this.state.displayMessage} />
+                <Display text={displayMsg} />
                 <PadsContainer>{renderHtml}</PadsContainer> 
                 <FormControl id="controls" component="fieldset">
                 <FormGroup aria-label="position">
@@ -181,11 +191,12 @@ const Pad = styled.div`
       color: "white",
       width: "200px",
       height: "4rem",
+      fontSize: "32px",
       margin: "auto auto 20px auto",
       backgroundColor: "black",
       fontFamily: 'Electrolize',
       justifyContent: "center",
-      verticalAlign: "middle"
+      alignItems: "center"
   }
 
   const possibleKeys = ["Q", "W", "E", "A", "S", "D", "Z", "X", "C"]
