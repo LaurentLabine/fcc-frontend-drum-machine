@@ -29,15 +29,15 @@ class Drum extends React.Component {
     };
   }
 
-  handleClick(e) {
+  handleClick(event) {
     if (!this.state.isPowered) return;
 
-    const targetId = e.target.id.slice(3);
+    const targetId = event.target.id.slice(3);
     this.fetchAndPlay(targetId);
   }
 
-  handleKeyPressed(e) {
-    const selection = e.key.toUpperCase();
+  handleKeyPressed(event) {
+    const selection = event.key.toUpperCase();
 
     if (!possibleKeys.includes(selection) || !this.state.isPowered) return;
 
@@ -100,7 +100,7 @@ class Drum extends React.Component {
     });
   }
 
-  volumeChanged(newValue) {
+  volumeChanged(event, newValue) {
     this.setState({
       volume: newValue,
       displayMessage: "Vol : " + newValue.toString(),
