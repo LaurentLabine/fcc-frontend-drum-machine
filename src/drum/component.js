@@ -7,7 +7,7 @@ import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import { withStyles } from '@material-ui/core/styles';
-import { red, green, grey, purple, white } from '@material-ui/core/colors';
+import { red, green, grey, purple } from '@material-ui/core/colors';
 import Ripple from "./ripple"
 
 class Drum extends React.Component {
@@ -22,7 +22,7 @@ class Drum extends React.Component {
 
       this.state = {
             displayMessage: '',
-            power: false,
+            isPowered: false,
             bank2: false,
             volume: 100
             };
@@ -30,15 +30,12 @@ class Drum extends React.Component {
   
      handleClick(e) {
 
-      console.log(e.target.id)
-
-
       //If Not Powered On, Do Nothing
-      if(!this.state.power)
-      return
+      if(!this.state.isPowered)
+        return
 
       var targetId = e.target.id.slice(3)
-      console.log(targetId)
+
       this.fetchAndPlay(targetId)
     }
 
@@ -47,16 +44,19 @@ class Drum extends React.Component {
       var selection = e.key.toUpperCase()
      
       //If the key pressed has not any Entry isn't defined or If Not Powered On, Do Nothing
-      if(!possibleKeys.includes(selection) || !this.state.power)
+      if(!possibleKeys.includes(selection) || !this.state.isPowered)
         return
 
       this.fetchAndPlay(selection)
      }
 
      fetchAndPlay(selection){
-      console.log(selection);
 
       var element = document.getElementById(selection);
+
+      if(!element)
+        return
+
       element.volume = this.state.volume/100;
       var bank = bankOne
 
@@ -67,36 +67,36 @@ class Drum extends React.Component {
                 displayMessage:bank.find(obj => obj.keyTrigger === selection).id
               })
 
+element.play()
+
+    this.clearDisplay(1000)
+     }
+
+     clearDisplay(timer){
       setTimeout(function() { //Start the timer
                 this.setState({displayMessage: ""}) //After 1 second, set render to true
-            }.bind(this), 1000)
-      element.play();
+            }.bind(this), timer)
      }
 
      bankSwitch() {
-
-      var prevMsg = this.state.displayMessage;
-
        this.setState({
          bank2: !this.state.bank2,
          displayMessage: this.state.bank2? "Bank 1" : "Bank 2"
        })
 
-       setTimeout(function() { //Start the timer
-          this.setState({displayMessage: prevMsg}) //After 1 second, set render to true
-      }.bind(this), 1000)
+       this.clearDisplay(1000);
      }
 
      onOffSwitch() {
 
-      if(!this.state.power){
+      if(!this.state.isPowered){
         setTimeout(function() { //Start the timer
           this.setState({displayMessage: ""}) //After 1 second, set render to true
       }.bind(this), 1000)
       }
 
         this.setState({
-          power: !this.state.power,
+          isPowered: !this.state.isPowered,
           displayMessage: "Power On"
         })
      }
@@ -113,9 +113,18 @@ class Drum extends React.Component {
      render() {
       
         var renderHtml = [];
+        var duration = "850";
         var bank = bankOne
-        if(this.state.bank2)
+        var rippleColor = bankOneColor
+
+        if(this.state.bank2){
           bank = bankTwo
+          duration = "1850"
+          rippleColor = bankTwoColor
+        }
+
+        if(!this.state.isPowered)
+        duration = "0"
 
         for(var i = 0; i< bank.length; i++)
         {
@@ -123,12 +132,12 @@ class Drum extends React.Component {
           <Pad key={bank[i].keyCode} onClick={this.handleClick} id={"div" + bank[i].keyTrigger} className="grid-item drum-pad" >
             {bank[i].keyTrigger}
             <audio id={bank[i].keyTrigger} className="clip" src={bank[i].url} />
-            <Ripple duration="1850" color="#9932cc" id={"rpl" + bank[i].keyTrigger} />
+            <Ripple duration={duration} color={rippleColor} id={"rpl" + bank[i].keyTrigger} />
           </Pad>);
         }
         var displayMsg = this.state.displayMessage
 
-        if(!this.state.power)
+        if(!this.state.isPowered)
           displayMsg = ""
 
        return (
@@ -140,8 +149,8 @@ class Drum extends React.Component {
                 <FormControl id="controls" component="fieldset">
                 <FormGroup aria-label="position">
                 <FormControlLabel value="top"  control={<OnOffSwitch onChange={this.onOffSwitch} />} label="Off/On" labelPlacement="top" />      
-                <FormControlLabel value="top" control={<PurpleSwitch onChange={this.bankSwitch}/>} label="Bank 1/2" labelPlacement="top" />        
-                <FormControlLabel value="top" control={<Slider value={this.state.volume} color="secondary" onChange={this.volumeChanged} aria-labelledby="continuous-slider" />} label="Volume" labelPlacement="top" /> 
+                <FormControlLabel value="top" control={<BankSwitch onChange={this.bankSwitch}/>} label="Bank 1/2" labelPlacement="top" />        
+                <FormControlLabel value="top" control={<PrettoSlider value={this.state.volume} color="secondary" onChange={this.volumeChanged} aria-labelledby="continuous-slider" />} label="Volume" labelPlacement="top" /> 
                 </FormGroup>
                 </FormControl>
             </DrumMachine>
@@ -158,11 +167,13 @@ class Drum extends React.Component {
       )
   }
 
+  const bankOneColor = "#59DBBC"
+  const bankTwoColor = "#9932cc"
+
 const PadsContainer = styled.div`
   display: grid;
   grid-template-columns: auto auto auto;
   width: 80%;
-  ${'' /* background-color: #2196F3; */}
   padding: 10px;
   gap: 10px;
 `
@@ -174,26 +185,56 @@ const OnOffSwitch = withStyles({
       color: green[500],
     },
     '&$checked + $track': {
-      backgroundColor: grey[500],
+      backgroundColor: "#FFF",
     },
   },
   checked: {},
   track: {},
 })(Switch);
 
-const PurpleSwitch = withStyles({
+const BankSwitch = withStyles({
   switchBase: {
-    color: grey[0],
+    color: bankOneColor,
     '&$checked': {
-      color: purple[500],
+      color: bankTwoColor,
     },
     '&$checked + $track': {
-      backgroundColor: grey[500],
+      backgroundColor: "#fff",
     },
   },
   checked: {},
   track: {},
 })(Switch);
+
+const PrettoSlider = withStyles({
+  root: {
+    color: '#316D9C',
+    height: 8,
+  },
+  thumb: {
+    height: 24,
+    width: 24,
+    backgroundColor: '#fff',
+    border: '2px solid #316D9C',
+    marginTop: -8,
+    marginLeft: -12,
+    '&:focus, &:hover, &$active': {
+      boxShadow: 'inherit',
+    },
+  },
+  active: {},
+  valueLabel: {
+    left: 'calc(-50% + 4px)',
+  },
+  track: {
+    height: 8,
+    borderRadius: 4,
+  },
+  rail: {
+    height: 8,
+    borderRadius: 4,
+  },
+})(Slider);
 
 const DrumMachine = styled.div`
   position:relative;
