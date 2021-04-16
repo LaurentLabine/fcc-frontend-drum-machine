@@ -48,7 +48,7 @@ class Drum extends React.Component {
   fetchAndPlay(selection) {
     const element = document.getElementById(selection);
 
-    if (!element) return;
+    if (!element || !this.state.isPowered) return;
 
     element.volume = this.state.volume / 100;
     let bank = bankOne;
@@ -60,7 +60,6 @@ class Drum extends React.Component {
     });
 
     element.play();
-    // this.clearDisplay(0)
   }
 
   // Function setting up a timed event to clear a display a seconda after an action.
@@ -79,12 +78,12 @@ class Drum extends React.Component {
       bank2: !this.state.bank2,
       displayMessage: this.state.bank2 ? "Bank 1" : "Bank 2",
     });
-    //  this.clearDisplay(1000);
   }
 
   onOffSwitch() {
+    let dsplmsg = "Power On";
     if (this.state.isPowered) {
-      this.setState({ displayMessage: "Power Off" });
+      dsplmsg = "Power Off";
       setTimeout(
         function () {
           // Start the timer
@@ -92,15 +91,16 @@ class Drum extends React.Component {
         }.bind(this),
         1000
       );
-    } else {
-      this.setState({
-        isPowered: !this.state.isPowered,
-        displayMessage: "Power On",
-      });
     }
+    console.log(dsplmsg);
+
+    this.setState({
+      displayMessage: dsplmsg,
+      isPowered: !this.state.isPowered,
+    });
   }
 
-  volumeChanged(event, newValue) {
+  volumeChanged(newValue) {
     this.setState({
       volume: newValue,
       displayMessage: "Vol : " + newValue.toString(),
@@ -114,7 +114,6 @@ class Drum extends React.Component {
     let duration = 850;
     let bank = bankOne;
     let rippleColor = bankOneColor;
-    let displayMsg = this.state.displayMessage.toString();
 
     if (this.state.bank2) {
       bank = bankTwo;
@@ -143,8 +142,6 @@ class Drum extends React.Component {
       );
     }
 
-    if (!this.state.isPowered) displayMsg = "";
-
     return (
       <React.Fragment>
         <GlobalStyle />
@@ -153,7 +150,7 @@ class Drum extends React.Component {
           tabIndex="0"
           onKeyDown={this.handleKeyPressed}
         >
-          <Display text={displayMsg} />
+          <Display text={this.state.displayMessage} />
           <PadsContainer>{renderHtml}</PadsContainer>
           <FormControl id="controls" component="fieldset">
             <FormGroup aria-label="position">
@@ -212,6 +209,7 @@ const PadsContainer = styled.div`
   width: 80%;
   padding: 10px;
   gap: 10px;
+  min-width: 440px;
 `;
 
 const OnOffSwitch = withStyles({
@@ -283,6 +281,7 @@ const DrumMachine = styled.div`
   background-image: url("https://drive.google.com/uc?id=137z1cqH-VkMHQRGD8iIvoILgB3ObLDB7");
   background-size: 100%;
   background-position: center;
+  min-width: 600px;
 `;
 
 const Pad = styled.div`
