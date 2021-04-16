@@ -17,14 +17,16 @@ export default createGlobalStyle `
     }
 
     body {
-        background-image: url("https://wonderfulengineering.com/wp-content/uploads/2014/06/galaxy-wallpapers-9.jpg");
+        ${'' /* background-image: url("https://wonderfulengineering.com/wp-content/uploads/2014/06/galaxy-wallpapers-9.jpg"); */}
+        background-image: url("https://wallpapertag.com/wallpaper/full/b/8/0/129399-most-popular-cosmic-background-1920x1200.jpg");
+        background-size: 100%;
+        background-position: center;
     }
 
     #controls {
         color: white;
         position: relative;
-        bottom: 200px;
-        right: 4%;
+        bottom: 240px;
         display: float;
         float: right;
     }

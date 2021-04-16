@@ -7,7 +7,8 @@ import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import { withStyles } from '@material-ui/core/styles';
-import { purple } from '@material-ui/core/colors';
+import { red, green, grey, purple, white } from '@material-ui/core/colors';
+import Ripple from "./ripple"
 
 class Drum extends React.Component {
     constructor(props) {
@@ -29,47 +30,61 @@ class Drum extends React.Component {
   
      handleClick(e) {
 
+      console.log(e.target.id)
+
+
+      //If Not Powered On, Do Nothing
       if(!this.state.power)
       return
 
-      var targedId = e.target.id.slice(3)
-      var element = document.getElementById(targedId);
-      var bank = bankOne
-
-      if(this.state.bank2)
-        bank = bankTwo
-
-      this.setState({
-                displayMessage:bank.find(obj => obj.keyTrigger === targedId).id
-              })
-
-      element.play();
+      var targetId = e.target.id.slice(3)
+      console.log(targetId)
+      this.fetchAndPlay(targetId)
     }
 
      handleKeyPressed(e) {
 
       var selection = e.key.toUpperCase()
      
+      //If the key pressed has not any Entry isn't defined or If Not Powered On, Do Nothing
       if(!possibleKeys.includes(selection) || !this.state.power)
-      return
+        return
+
+      this.fetchAndPlay(selection)
+     }
+
+
+
+     fetchAndPlay(selection){
+      console.log(selection);
 
       var element = document.getElementById(selection);
-      
+      element.volume = this.state.volume/100;
       var bank = bankOne
 
       if(this.state.bank2)
         bank = bankTwo
+
+
         
       this.setState({
-              displayMessage:bank.find(obj => obj.keyTrigger === selection).id
-            })
+                displayMessage:bank.find(obj => obj.keyTrigger === selection).id
+              })
       element.play();
      }
 
      bankSwitch() {
+
+      var prevMsg = this.state.displayMessage;
+
        this.setState({
-         bank2: !this.state.bank2
+         bank2: !this.state.bank2,
+         displayMessage: this.state.bank2? "Bank 1" : "Bank 2"
        })
+
+       setTimeout(function() { //Start the timer
+          this.setState({displayMessage: prevMsg}) //After 1 second, set render to true
+      }.bind(this), 1000)
      }
 
      onOffSwitch() {
@@ -77,7 +92,7 @@ class Drum extends React.Component {
       if(!this.state.power){
         setTimeout(function() { //Start the timer
           this.setState({displayMessage: ""}) //After 1 second, set render to true
-      }.bind(this), 2000)
+      }.bind(this), 1000)
       }
 
         this.setState({
@@ -87,9 +102,11 @@ class Drum extends React.Component {
      }
 
      volumeChanged(event, newValue) {
+      
        this.setState({
          volume: newValue
        })
+      
        console.log(newValue)
      }
   
@@ -102,8 +119,9 @@ class Drum extends React.Component {
           {
             renderHtml.push(
             <Pad key={bankTwo[i].keyCode} onClick={this.handleClick} id={"div" + bankTwo[i].keyTrigger} className="grid-item drum-pad" >
-            {bankTwo[i].keyTrigger}
-                <audio id={bankTwo[i].keyTrigger} className="clip" src={bankTwo[i].url} />
+              {bankTwo[i].keyTrigger}
+              <audio id={bankTwo[i].keyTrigger} className="clip" src={bankTwo[i].url} />
+              <Ripple duration="1850" color="#9932cc" id={"rpl" + bankTwo[i].keyTrigger} />
             </Pad>);
          }
         }
@@ -112,8 +130,9 @@ class Drum extends React.Component {
           {
             renderHtml.push(
             <Pad key={bankOne[i].keyCode} onClick={this.handleClick} id={"div" + bankOne[i].keyTrigger} className="grid-item drum-pad" >
-            {bankOne[i].keyTrigger}
-                <audio id={bankOne[i].keyTrigger} className="clip" src={bankOne[i].url} />
+              {bankOne[i].keyTrigger}
+              <audio id={bankOne[i].keyTrigger} className="clip" src={bankOne[i].url} />
+              <Ripple color="#ff1ead" id={"rpl" + bankOne[i].keyTrigger} />
             </Pad>);
          }
         }
@@ -131,8 +150,8 @@ class Drum extends React.Component {
                 <PadsContainer>{renderHtml}</PadsContainer> 
                 <FormControl id="controls" component="fieldset">
                 <FormGroup aria-label="position">
-                <FormControlLabel value="top"  control={<PurpleSwitch color="secondary" onChange={this.onOffSwitch} />} label="Off/On" labelPlacement="top" />      
-                <FormControlLabel value="top" control={<Switch color="secondary" onChange={this.bankSwitch}/>} label="Bank 1/2" labelPlacement="top" />        
+                <FormControlLabel value="top"  control={<OnOffSwitch onChange={this.onOffSwitch} />} label="Off/On" labelPlacement="top" />      
+                <FormControlLabel value="top" control={<PurpleSwitch onChange={this.bankSwitch}/>} label="Bank 1/2" labelPlacement="top" />        
                 <FormControlLabel value="top" control={<Slider value={this.state.volume} color="secondary" onChange={this.volumeChanged} aria-labelledby="continuous-slider" />} label="Volume" labelPlacement="top" /> 
                 </FormGroup>
                 </FormControl>
@@ -153,20 +172,34 @@ class Drum extends React.Component {
 const PadsContainer = styled.div`
   display: grid;
   grid-template-columns: auto auto auto;
-  width: 70%;
-  background-color: #2196F3;
+  width: 80%;
+  ${'' /* background-color: #2196F3; */}
   padding: 10px;
   gap: 10px;
 `
 
+const OnOffSwitch = withStyles({
+  switchBase: {
+    color: red[300],
+    '&$checked': {
+      color: green[500],
+    },
+    '&$checked + $track': {
+      backgroundColor: grey[500],
+    },
+  },
+  checked: {},
+  track: {},
+})(Switch);
+
 const PurpleSwitch = withStyles({
   switchBase: {
-    color: purple[300],
+    color: grey[0],
     '&$checked': {
       color: purple[500],
     },
     '&$checked + $track': {
-      backgroundColor: purple[500],
+      backgroundColor: grey[500],
     },
   },
   checked: {},
@@ -176,30 +209,35 @@ const PurpleSwitch = withStyles({
 const DrumMachine = styled.div`
   position:relative;
   padding: 25px;
-  width: 50rem;
+  width: 40rem;
   height: 22rem;
-  background-color: blue;
-  border-radius: 25px;
-  border: 2px solid #73AD21;
+  border-radius: 5px;
+  border: 2px solid white;
   text-align: center;
+  background-Image: url("https://wallpapertag.com/wallpaper/full/e/8/b/129414-download-free-cosmic-background-2991x1977-desktop.jpg");
+  background-size: 100%;
+ background-position: center;
 `
 
 const Pad = styled.div`
-  background-color: rgba(255, 255, 255, 0.8);
+  overflow: hidden;
+  position: relative;
+  background-color: White;
   border: 1px solid rgba(0, 0, 0, 0.8);
   padding: 20px;
   font-size: 30px;
   cursor: pointer;
   border-radius: 20px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.4);
 `
 
   const DisplayStyle = {
       display: "flex",
-      color: "white",
+      color: "#e48400",
       width: "200px",
-      height: "4rem",
+      height: "5rem",
       fontSize: "32px",
-      margin: "auto auto 20px auto",
+      margin: "auto auto 12px auto",
       backgroundColor: "black",
       fontFamily: 'Electrolize',
       justifyContent: "center",
