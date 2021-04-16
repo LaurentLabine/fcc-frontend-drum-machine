@@ -92,7 +92,6 @@ class Drum extends React.Component {
         1000
       );
     }
-    console.log(dsplmsg);
 
     this.setState({
       displayMessage: dsplmsg,
@@ -101,12 +100,12 @@ class Drum extends React.Component {
   }
 
   volumeChanged(event, newValue) {
+    let dsplmsg = "";
+    if (this.state.isPowered) dsplmsg = "Vol :" + newValue.toString();
     this.setState({
       volume: newValue,
-      displayMessage: "Vol : " + newValue.toString(),
+      displayMessage: dsplmsg,
     });
-
-    console.log(newValue);
   }
 
   render() {
