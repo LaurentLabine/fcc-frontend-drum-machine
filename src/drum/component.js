@@ -53,8 +53,6 @@ class Drum extends React.Component {
       this.fetchAndPlay(selection)
      }
 
-
-
      fetchAndPlay(selection){
       console.log(selection);
 
@@ -65,11 +63,13 @@ class Drum extends React.Component {
       if(this.state.bank2)
         bank = bankTwo
 
-
-        
       this.setState({
                 displayMessage:bank.find(obj => obj.keyTrigger === selection).id
               })
+
+      setTimeout(function() { //Start the timer
+                this.setState({displayMessage: ""}) //After 1 second, set render to true
+            }.bind(this), 1000)
       element.play();
      }
 
@@ -113,30 +113,19 @@ class Drum extends React.Component {
      render() {
       
         var renderHtml = [];
+        var bank = bankOne
         if(this.state.bank2)
-        {
-          for(var i = 0; i< bankTwo.length; i++)
-          {
-            renderHtml.push(
-            <Pad key={bankTwo[i].keyCode} onClick={this.handleClick} id={"div" + bankTwo[i].keyTrigger} className="grid-item drum-pad" >
-              {bankTwo[i].keyTrigger}
-              <audio id={bankTwo[i].keyTrigger} className="clip" src={bankTwo[i].url} />
-              <Ripple duration="1850" color="#9932cc" id={"rpl" + bankTwo[i].keyTrigger} />
-            </Pad>);
-         }
-        }
-        else{
-          for(i = 0; i< bankTwo.length; i++)
-          {
-            renderHtml.push(
-            <Pad key={bankOne[i].keyCode} onClick={this.handleClick} id={"div" + bankOne[i].keyTrigger} className="grid-item drum-pad" >
-              {bankOne[i].keyTrigger}
-              <audio id={bankOne[i].keyTrigger} className="clip" src={bankOne[i].url} />
-              <Ripple color="#ff1ead" id={"rpl" + bankOne[i].keyTrigger} />
-            </Pad>);
-         }
-        }
+          bank = bankTwo
 
+        for(var i = 0; i< bank.length; i++)
+        {
+          renderHtml.push(
+          <Pad key={bank[i].keyCode} onClick={this.handleClick} id={"div" + bank[i].keyTrigger} className="grid-item drum-pad" >
+            {bank[i].keyTrigger}
+            <audio id={bank[i].keyTrigger} className="clip" src={bank[i].url} />
+            <Ripple duration="1850" color="#9932cc" id={"rpl" + bank[i].keyTrigger} />
+          </Pad>);
+        }
         var displayMsg = this.state.displayMessage
 
         if(!this.state.power)
