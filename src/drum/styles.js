@@ -1,6 +1,6 @@
-import { createGlobalStyle } from "styled-components/macro"
+import { createGlobalStyle } from "styled-components/macro";
 
-export default createGlobalStyle `
+export default createGlobalStyle`
 
     #root {
     display: flex;
@@ -34,4 +34,4 @@ export default createGlobalStyle `
         color: magenta;
     }
 
-    `
+    `;

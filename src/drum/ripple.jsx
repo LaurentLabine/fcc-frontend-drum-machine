@@ -14,9 +14,9 @@ const RippleContainer = styled.div`
     border-radius: 100%;
     position: absolute;
     opacity: 0.75;
-    background-color: ${props => props.color};
+    background-color: ${(props) => props.color};
     animation-name: ripple;
-    animation-duration: ${props => props.duration}ms;
+    animation-duration: ${(props) => props.duration}ms;
   }
 
   @keyframes ripple {
@@ -43,14 +43,14 @@ const useDebouncedRippleCleanUp = (rippleCount, duration, cleanUpFunction) => {
   }, [rippleCount, duration, cleanUpFunction]);
 };
 
-const Ripple = ({ duration = 850, color = "#fff", id="" }) => {
+const Ripple = ({ duration = 850, color = "#fff", id = "" }) => {
   const [rippleArray, setRippleArray] = useState([]);
 
   useDebouncedRippleCleanUp(rippleArray.length, duration, () => {
     setRippleArray([]);
   });
 
-  const addRipple = event => {
+  const addRipple = (event) => {
     const rippleContainer = event.currentTarget.getBoundingClientRect();
     const size =
       rippleContainer.width > rippleContainer.height
@@ -61,14 +61,19 @@ const Ripple = ({ duration = 850, color = "#fff", id="" }) => {
     const newRipple = {
       x,
       y,
-      size
+      size,
     };
 
     setRippleArray([...rippleArray, newRipple]);
   };
 
   return (
-    <RippleContainer duration={duration} color={color} id={id} onMouseDown={addRipple}>
+    <RippleContainer
+      duration={duration}
+      color={color}
+      id={id}
+      onMouseDown={addRipple}
+    >
       {rippleArray.length > 0 &&
         rippleArray.map((ripple, index) => {
           return (
@@ -78,7 +83,7 @@ const Ripple = ({ duration = 850, color = "#fff", id="" }) => {
                 top: ripple.y,
                 left: ripple.x,
                 width: ripple.size,
-                height: ripple.size
+                height: ripple.size,
               }}
             />
           );
@@ -89,7 +94,8 @@ const Ripple = ({ duration = 850, color = "#fff", id="" }) => {
 
 Ripple.propTypes = {
   duration: PropTypes.number,
-  color: PropTypes.string
+  color: PropTypes.string,
+  id: PropTypes.string,
 };
 
 export default Ripple;
