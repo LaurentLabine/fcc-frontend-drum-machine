@@ -1,7 +1,6 @@
 import { createGlobalStyle } from "styled-components/macro";
 
 export default createGlobalStyle`
-
     #root {
     display: flex;
     justify-content: center;
@@ -17,7 +16,7 @@ export default createGlobalStyle`
     }
 
     body {
-        background-image: url("https://drive.google.com/uc?id=1CnuuuH5VpDmTGZL5J251k-FTWD-e5a6T");
+        background-image: url("https://user-images.githubusercontent.com/20836468/115224640-67059d00-a10d-11eb-8a10-9d799e4fc93d.jpg");
         background-size: 100%;
         background-position: center;
     }
@@ -29,9 +28,4 @@ export default createGlobalStyle`
         display: float;
         float: right;
     }
-
-    #onOffSwitch {
-        color: magenta;
-    }
-
     `;

@@ -280,7 +280,7 @@ const DrumMachine = styled.div`
   border-radius: 5px;
   border: 2px solid white;
   text-align: center;
-  background-image: url("https://drive.google.com/uc?id=137z1cqH-VkMHQRGD8iIvoILgB3ObLDB7");
+  background-image: url("https://user-images.githubusercontent.com/20836468/115225078-f7dc7880-a10d-11eb-8524-e91e976e3814.jpg");
   background-size: 100%;
   background-position: center;
   min-width: 600px;
