@@ -1,10 +1,9 @@
 # freeCodeCamp Front End Development Libraries Projects - Build a Drum Machine
-
-## What is this
-
 I built this project as part of freeCodeCamp's curriculum to learn and practice Responsive Web Design.
 
-## What Technologies have been used?
+It is accessible here: https://laurentlabine.github.io/fcc-drum-machine/
+
+## Technologies used?
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app)
 
@@ -14,10 +13,14 @@ LightHouse audits have also been added to workflow using github actions in order
 
 It answers the technical requirements as stated in the challenge located here: https://www.freecodecamp.org/learn/front-end-libraries/front-end-libraries-projects/build-a-drum-machine with the tests that can be run from the page itself.
 
-## Can I see it?
-
-It (as well as the resources in it) is hosted on github Pages for simplicity and it is accessible here: https://laurentlabine.github.io/fcc-drum-machine/
-
 ## Possible Improvements?
 
 Future possible improvements could include implementing using React Hooks as well as adding a media request and a different layout for smaller screens. 
+
+To deploy a new version on github pages use :
+
+npm run deploy
+
+To start locally:
+
+npm start
