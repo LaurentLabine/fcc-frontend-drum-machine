@@ -1,6 +1,6 @@
 # freeCodeCamp Front End Development Libraries Projects - Project 3 - Build a Drum Machine
 
-See the result here: https://laurentlabine.github.io/fcc-drum-machine/
+See the result here: https://laurentlabine.github.io/fcc-frontend-drum-machine/
 
 I built this project as part of freeCodeCamp's curriculum to learn and practice Responsive Web Design.
 
