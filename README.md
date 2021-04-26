@@ -10,7 +10,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 It is built using the React Library coupled to Styled-Components and Material UI components for the styling along with eslint and prettier extensions for linting and code formatting.
 
-LightHouse audits have also been added to workflow using github actions in order to keep track of the application's performance using Lighthouse Reports
+LightHouse audits have also been added to a workflow using github actions to keep track of the application's performance using Lighthouse Reports
 
 It answers the technical requirements as stated in the challenge located here: https://www.freecodecamp.org/learn/front-end-libraries/front-end-libraries-projects/build-a-drum-machine with the tests that can be run from the page itself.
 
