@@ -12,7 +12,7 @@ It is built using the React Library coupled to Styled-Components and Material UI
 
 LightHouse audits have also been added to a workflow using github actions to keep track of the application's performance using Lighthouse Reports
 
-It answers the technical requirements as stated in the challenge located here: https://www.freecodecamp.org/learn/front-end-libraries/front-end-libraries-projects/build-a-drum-machine with the tests that can be run from the page itself.
+It answers the technical requirements as stated in the challenge located here: https://www.freecodecamp.org/learn/front-end-libraries/front-end-libraries-projects/build-a-drum-machine with the tests that can be run from the page itself.  **Note that the drum has to ON for the tests to pass.**
 
 Additional features include:
 
