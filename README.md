@@ -2,6 +2,8 @@
 
 See the result here: https://laurentlabine.github.io/fcc-frontend-drum-machine/
 
+Thumbnail available here : https://user-images.githubusercontent.com/20836468/118485205-6c5c0480-b718-11eb-9467-afb56800c680.png
+
 I built this project as part of freeCodeCamp's curriculum to learn and practice Responsive Web Design.
 
 ## Technologies
